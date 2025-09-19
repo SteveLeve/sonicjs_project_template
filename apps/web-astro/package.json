@@ -1,0 +1,25 @@
+{
+  "name": "example-web",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Frontend for Test Community Site",
+  "scripts": {
+    "dev": "wrangler dev",
+    "build": "astro build",
+    "deploy": "wrangler deploy",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "astro": "^4.16.0",
+    "@astrojs/cloudflare": "^10.0.0",
+    "@astrojs/react": "^3.6.2",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.8",
+    "@types/react-dom": "^18.3.0",
+    "typescript": "^5.6.2",
+    "wrangler": "^3.76.0"
+  }
+}

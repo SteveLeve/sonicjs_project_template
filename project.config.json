@@ -1,0 +1,25 @@
+{
+  "domain": "example.com",
+  "project": {
+    "name": "example",
+    "description": "Test Community Site",
+    "version": "1.0.0"
+  },
+  "cloudflare": {
+    "account_id": "{{CLOUDFLARE_ACCOUNT_ID}}",
+    "zone_id": "{{CLOUDFLARE_ZONE_ID}}"
+  },
+  "resources": {
+    "database": "example_db",
+    "kv_namespace": "EXAMPLE_PUBLISHED",
+    "r2_bucket": "example-media",
+    "workers": {
+      "frontend": "example-web",
+      "cms": "example-admin"
+    },
+    "hostnames": {
+      "root": "example.com",
+      "admin": "admin.example.com"
+    }
+  }
+}

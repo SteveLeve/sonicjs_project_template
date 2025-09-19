@@ -1,0 +1,106 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "SonicJS Community Website Template Configuration",
+  "description": "Configuration schema for domain-based project setup with Cloudflare Workers",
+  "type": "object",
+  "properties": {
+    "domain": {
+      "type": "string",
+      "pattern": "^[a-z0-9.-]+\\.[a-z]{2,}$",
+      "description": "Primary domain name for the project (e.g., community.com)",
+      "examples": ["community.com", "mysite.dev", "awesome-group.org"]
+    },
+    "project": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*$",
+          "description": "Base project name derived from domain (e.g., 'community' from 'community.com')"
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": "Brief description of your community website"
+        },
+        "version": {
+          "type": "string",
+          "pattern": "^\\d+\\.\\d+\\.\\d+$",
+          "default": "1.0.0",
+          "description": "Project version (semantic versioning)"
+        }
+      },
+      "required": ["name", "description"]
+    },
+    "cloudflare": {
+      "type": "object",
+      "properties": {
+        "account_id": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{32}$",
+          "description": "Cloudflare account ID (32-character hex string)"
+        },
+        "zone_id": {
+          "type": "string", 
+          "pattern": "^[a-f0-9]{32}$",
+          "description": "Cloudflare zone ID for your domain"
+        }
+      }
+    },
+    "resources": {
+      "type": "object",
+      "properties": {
+        "database": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]*$",
+          "description": "D1 database name (typically {project_name}_db)"
+        },
+        "kv_namespace": {
+          "type": "string",
+          "pattern": "^[A-Z][A-Z0-9_]*$",
+          "description": "KV namespace name (typically {PROJECT_NAME}_PUBLISHED)"
+        },
+        "r2_bucket": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]*[a-z0-9]$",
+          "description": "R2 bucket name (typically {project_name}-media)"
+        },
+        "workers": {
+          "type": "object",
+          "properties": {
+            "frontend": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9-]*[a-z0-9]$",
+              "description": "Frontend worker name"
+            },
+            "cms": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9-]*[a-z0-9]$",
+              "description": "CMS worker name"
+            }
+          },
+          "required": ["frontend", "cms"]
+        },
+        "hostnames": {
+          "type": "object",
+          "properties": {
+            "root": {
+              "type": "string",
+              "pattern": "^[a-z0-9.-]+\\.[a-z]{2,}$",
+              "description": "Root domain hostname"
+            },
+            "admin": {
+              "type": "string",
+              "pattern": "^[a-z0-9.-]+\\.[a-z]{2,}$",
+              "description": "Admin subdomain hostname"
+            }
+          },
+          "required": ["root", "admin"]
+        }
+      },
+      "required": ["database", "kv_namespace", "r2_bucket", "workers", "hostnames"]
+    }
+  },
+  "required": ["domain", "project", "resources"]
+}
