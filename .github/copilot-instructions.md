@@ -1,6 +1,6 @@
 # SonicJS Community Website Template – AI Agent Instructions
 
-Purpose: Enable AI agents to perform safe, context-aware changes quickly. Focus on domain-driven config, infra/app symmetry, and documentation-first workflow (see `/.github/instructions/DocumentationPolicy.instructions.md`).
+Purpose: Enable AI agents to perform safe, context-aware changes quickly. Focus on domain-driven config, infra/app symmetry, and documentation-first workflow (see `/docs/README.md`).
 
 ## Core Architecture (Big Picture)
 Single SonicJS Worker on Cloudflare with integrated admin UI at `/admin` routes sharing D1/KV/R2. Resource names derive ONLY from `project.config.json` (never hard‑code). Terraform provisions storage + DNS; Wrangler deploys code. Data path: Browser → SonicJS Worker → (KV cache | D1) + R2 for media.

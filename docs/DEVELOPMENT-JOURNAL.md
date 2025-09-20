@@ -60,13 +60,15 @@ This document captures the ongoing evolution, intentions, and design decisions f
 - [x] WARP.md developer handbook
 - [x] Architecture decision records
 - [x] System diagrams with configurable naming
+- [x] **ADR-0002**: SonicJS integration architecture pivot
+- [x] **Documentation cleanup**: Aligned all docs with single-worker architecture
+- [x] **Hostname consolidation**: Single domain with `/admin` routes
+- [x] **Obsolete code removal**: Cleaned up dual-worker references
 
 ### In Progress 🚧
-- [ ] **Phase 1 Implementation**: Actually building the Astro + SonicJS applications
-- [ ] **Terraform Infrastructure**: Convert scaffold to real infrastructure code  
-- [ ] **CI/CD Pipeline**: Implement GitHub Actions deployment
-- [ ] **Database Schemas**: Design and implement D1 migrations
-- [ ] **SonicJS Configuration**: Set up collections, roles, and API endpoints
+- [ ] **SonicJS Integration**: Implement actual `app/` directory with integrated SonicJS
+- [ ] **Terraform Updates**: Update `main.tf` and `outputs.tf` for single-worker model
+- [ ] **End-to-End Testing**: Verify automated setup workflow works completely
 
 ### Next Priorities 📋
 
@@ -159,6 +161,71 @@ Following the "intention before action" rule:
 
 ---
 
-**Last Updated:** September 19, 2025  
+**Last Updated:** September 20, 2025  
 **Next Review:** Weekly (every Thursday)  
 **Maintainer:** Development team + AI assistants
+
+## Recent Learnings (September 20, 2025)
+
+### Major Architectural Pivot: SonicJS Integration Strategy
+
+**Discovery:** Our initial dual-worker architecture (separate CMS + frontend) fundamentally misunderstood SonicJS design patterns.
+
+**Root Issue:** SonicJS is designed as a **single integrated Astro application** with admin UI at `/admin` routes, not separate workers.
+
+**Evidence:** 
+- Official SonicJS repo shows unified `wrangler.toml` and single deployment
+- Admin interface served from same worker at `/admin` paths
+- No separate domain/subdomain patterns in SonicJS documentation
+- Single Astro build process generates both public and admin UI
+
+### Documentation-First Cleanup Process
+
+**Process Followed:**
+1. **Created ADR-0002** documenting the architectural pivot decision
+2. **Updated all documentation** (WARP.md, README.md, integration strategy) 
+3. **Removed obsolete code** (deleted `apps/` directories)
+4. **Consolidated hostname architecture** (single domain, no admin subdomain)
+
+**Key Insight:** Documentation cleanup **before** implementation prevents architectural drift and confusion.
+
+### Hostname Architecture Lessons
+
+**Original Approach:** Separate domains (`domain.com` + `admin.domain.com`)
+**Corrected Approach:** Single domain with route-based admin (`domain.com/admin`)
+
+**Files Updated:**
+- `scripts/setup.js` - Single worker config generation
+- `infra/variables.tf` - Removed admin hostname variable  
+- `.github/copilot-instructions.md` - Aligned with current architecture
+- `project.config.schema.json` - Updated validation schema
+
+**Impact:** Simplified DNS setup, reduced infrastructure complexity, aligned with SonicJS patterns.
+
+### Template vs. Framework Understanding
+
+**Learning:** We're building a **template that integrates SonicJS**, not a wrapper around it.
+
+**Implications:**
+- Preserve SonicJS upgrade path and customization patterns
+- Add automation around SonicJS setup (domain config, resource provisioning)
+- Enhance with community-specific schemas and workflows
+- Maintain clear separation between template automation and SonicJS core
+
+### Next Phase: Implementation Strategy
+
+**Current State:** Clean architecture, aligned documentation, ready for implementation.
+
+**Immediate Next Steps:**
+1. **Implement `app/` directory** with actual SonicJS integration
+2. **Update Terraform** `main.tf` and `outputs.tf` to match new single-worker model
+3. **Test automated setup** end-to-end workflow
+4. **Add community-specific content schemas** to SonicJS configuration
+
+**Success Metrics:**
+- `node scripts/setup.js domain.com "Description"` → working SonicJS site
+- Documentation matches implementation reality
+- Clear upgrade path for future SonicJS releases
+
+---
+

@@ -96,7 +96,7 @@ Negative:
 
 ## References
 
-- Documentation policy (/.github/instructions/DocumentationPolicy.instructions.md)
+- Documentation policy (/docs/README.md)
 - Setup script `scripts/setup.js` (naming authority)
 
 ---

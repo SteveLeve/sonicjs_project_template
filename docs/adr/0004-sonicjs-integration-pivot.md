@@ -217,7 +217,7 @@ Maintain our domain-based naming but align with SonicJS conventions:
 - SonicJS Repository: <https://github.com/lane711/sonicjs>
 - SonicJS Documentation: <https://sonicjs.com>
 - ADR 0001: Secrets and Configuration Handling
-- Documentation Policy: /.github/instructions/DocumentationPolicy.instructions.md
+- Documentation Policy: /docs/README.md
 
 ---
 
