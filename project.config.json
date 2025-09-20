@@ -13,13 +13,7 @@
     "database": "example_db",
     "kv_namespace": "EXAMPLE_PUBLISHED",
     "r2_bucket": "example-media",
-    "workers": {
-      "frontend": "example-web",
-      "cms": "example-admin"
-    },
-    "hostnames": {
-      "root": "example.com",
-      "admin": "admin.example.com"
-    }
+    "worker": "example",
+    "hostname": "example.com"
   }
 }

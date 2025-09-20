@@ -61,7 +61,7 @@ node scripts/setup.js yourdomain.com "Your community description"
 ## Repository Structure
 
 ```text
-sonicjs-community-template/
+{{PROJECT_NAME}}/
 ├── app/                           # SonicJS integrated application
 │   ├── src/
 │   │   ├── custom/               # Community-specific schemas
@@ -93,10 +93,10 @@ sonicjs-community-template/
 - Terraform 1.6+
 
 **Cloudflare Account Requirements:**
-- Cloudflare account with your domain zone added
+- Cloudflare account with `{{DOMAIN}}` zone added
 - API token with permissions for:
   - Account: Workers, D1, R2, KV
-  - Zone: DNS for your domain
+  - Zone: DNS for `{{DOMAIN}}`
 
 **Environment Variables:**
 ```bash
