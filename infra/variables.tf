@@ -45,11 +45,5 @@ variable "r2_bucket_name" {
 variable "root_hostname" {
   type        = string
   default     = "example.com"
-  description = "Root domain hostname"
-}
-
-variable "admin_hostname" {
-  type        = string
-  default     = "admin.example.com"
-  description = "Admin subdomain hostname"
+  description = "Domain hostname (admin at /admin route)"
 }

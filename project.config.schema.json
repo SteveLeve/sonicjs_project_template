@@ -66,40 +66,18 @@
           "pattern": "^[a-z][a-z0-9-]*[a-z0-9]$",
           "description": "R2 bucket name (typically {project_name}-media)"
         },
-        "workers": {
-          "type": "object",
-          "properties": {
-            "frontend": {
-              "type": "string",
-              "pattern": "^[a-z][a-z0-9-]*[a-z0-9]$",
-              "description": "Frontend worker name"
-            },
-            "cms": {
-              "type": "string",
-              "pattern": "^[a-z][a-z0-9-]*[a-z0-9]$",
-              "description": "CMS worker name"
-            }
-          },
-          "required": ["frontend", "cms"]
+        "worker": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]*[a-z0-9]$",
+          "description": "SonicJS worker name"
         },
-        "hostnames": {
-          "type": "object",
-          "properties": {
-            "root": {
-              "type": "string",
-              "pattern": "^[a-z0-9.-]+\\.[a-z]{2,}$",
-              "description": "Root domain hostname"
-            },
-            "admin": {
-              "type": "string",
-              "pattern": "^[a-z0-9.-]+\\.[a-z]{2,}$",
-              "description": "Admin subdomain hostname"
-            }
-          },
-          "required": ["root", "admin"]
+        "hostname": {
+          "type": "string",
+          "pattern": "^[a-z0-9.-]+\\.[a-z]{2,}$",
+          "description": "Domain hostname (admin at /admin route)"
         }
       },
-      "required": ["database", "kv_namespace", "r2_bucket", "workers", "hostnames"]
+      "required": ["database", "kv_namespace", "r2_bucket", "worker", "hostname"]
     }
   },
   "required": ["domain", "project", "resources"]
