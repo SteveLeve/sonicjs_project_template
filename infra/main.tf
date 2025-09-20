@@ -24,20 +24,14 @@ resource "cloudflare_r2_bucket" "media" {
 }
 
 # --- DNS Records ---
-resource "cloudflare_record" "root" {
-  zone_id = var.zone_id
-  name    = "@"
-  type    = "A"
-  content = "192.0.2.1"     # placeholder IP; proxied so origin is hidden
-  proxied = true
-  comment = "Root domain for ${var.project_name} frontend"
-}
-
-resource "cloudflare_record" "admin" {
-  zone_id = var.zone_id
-  name    = "admin"
-  type    = "A"
-  content = "192.0.2.1"
-  proxied = true
-  comment = "Admin subdomain for ${var.project_name} CMS"
-}
+# DEFERRED: Will be implemented in future ADR addressing domain cutover strategy
+#
+# resource "cloudflare_dns_record" "root" {
+#   zone_id = var.zone_id
+#   name    = "@"
+#   type    = "A"
+#   content = "192.0.2.1"     # placeholder IP; proxied so origin is hidden
+#   ttl     = 1               # auto for proxied records
+#   proxied = true
+#   comment = "Root domain for ${var.project_name} frontend"
+# }

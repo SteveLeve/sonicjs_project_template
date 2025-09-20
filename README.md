@@ -20,8 +20,9 @@ A production-ready template for creating community-focused websites that scale g
 - No user accounts needed to start (admin-only initially)
 
 ### ⚡ **Modern Tech Stack**
-- **Frontend:** [Astro](https://astro.build/) v4+ with React components
-- **Backend:** [SonicJS](https://sonicjs.com/) Workers-native CMS
+
+- **Frontend & Backend:** [SonicJS](https://sonicjs.com/) - Astro-based Workers-native CMS
+- **Framework:** [Astro](https://astro.build/) v4+ with React components
 - **Database:** Cloudflare D1 (SQLite-compatible)
 - **Storage:** Cloudflare R2 for media files
 - **Cache:** Cloudflare KV for ultra-fast reads
@@ -74,26 +75,20 @@ terraform init
 terraform apply -var="account_id=your_account_id" -var="zone_id=your_zone_id"
 ```
 
-### 4. Deploy Applications
+### 4. Deploy Application
 
 ```bash
-# Deploy the CMS backend
-cd apps/admin-sonicjs
+# Deploy the SonicJS app
+cd app
 npm install
 wrangler d1 migrations apply {{DB_NAME}}
-npm run deploy
-
-# Deploy the frontend
-cd ../web-astro  
-npm install
-npm run build
 npm run deploy
 ```
 
 ### 5. Access Your Site
 
-- **Frontend:** `https://{{ROOT_HOSTNAME}}`
-- **CMS Admin:** `https://{{ADMIN_HOSTNAME}}/admin`
+- **Website:** `https://{{ROOT_HOSTNAME}}`
+- **Admin Panel:** `https://{{ROOT_HOSTNAME}}/admin`
 
 ## 📖 Documentation
 
@@ -102,26 +97,29 @@ npm run deploy
 - [**Configuration**](docs/configuration.md) - Domain setup and customization
 - [**Deployment Guide**](docs/deployment.md) - Production deployment steps
 - [**API Reference**](docs/api/) - SonicJS API documentation
+- **Architecture Decision Records (ADR):** See `docs/adr/` for design decisions.
+  - ADR-0001: [Secrets & Configuration Handling](docs/adr/0001-secrets-handling.md)
 
 ## 🏗️ Architecture
 
-```
-┌─────────────┐    ┌──────────────────┐    ┌─────────────────┐
-│   Browser   │───▶│  Astro Frontend  │───▶│  SonicJS API    │
-│             │    │  (Worker SSR)    │    │  (Worker CMS)   │
-└─────────────┘    └──────────────────┘    └─────────────────┘
-                            │                        │
-                            ▼                        ▼
-                   ┌─────────────────┐      ┌─────────────────┐
-                   │   KV (Cache)    │      │   D1 Database   │
-                   │   R2 (Media)    │      │   (Content)     │
-                   └─────────────────┘      └─────────────────┘
+```text
+┌─────────────┐    ┌──────────────────────────┐    ┌─────────────────┐
+│   Browser   │───▶│     SonicJS Worker       │───▶│   D1 Database   │
+│             │    │  (Admin UI + Frontend)   │    │   (Content)     │
+└─────────────┘    └──────────────────────────┘    └─────────────────┘
+                            │                              │
+                            ▼                              ▼
+                   ┌─────────────────┐            ┌─────────────────┐
+                   │   KV (Cache)    │            │   R2 (Media)    │
+                   │                 │            │                 │
+                   └─────────────────┘            └─────────────────┘
 ```
 
 **Request Flow:**
-1. Browser requests page → Astro Worker (SSR)
-2. Astro fetches content → SonicJS CMS API  
-3. CMS serves from D1 database or KV cache
+
+1. Browser requests page → SonicJS Worker
+2. Worker serves admin UI (at `/admin`) or public pages
+3. Content fetched from D1 database or KV cache
 4. Media assets served directly from R2
 5. Fully rendered page returned to browser
 
@@ -130,13 +128,9 @@ npm run deploy
 ### Local Development
 
 ```bash
-# Start the CMS (Terminal 1)
-cd apps/admin-sonicjs
+# Start SonicJS development server
+cd app
 npm run dev  # Runs on localhost:8787
-
-# Start the frontend (Terminal 2)  
-cd apps/web-astro
-npm run dev  # Runs on localhost:8788
 ```
 
 ### Common Tasks
@@ -155,7 +149,8 @@ wrangler kv:bulk delete --namespace-id YOUR_KV_ID
 ## 🎨 Customization
 
 ### Content Types
-Modify `apps/admin-sonicjs/sonic.config.mjs` to add custom content types:
+
+Modify `app/src/custom/custom.config.ts` to add custom content types:
 
 ```javascript
 collections: {
@@ -170,11 +165,14 @@ collections: {
 ```
 
 ### Frontend Styling
-The Astro frontend uses modern CSS with CSS custom properties. Customize in:
-- `apps/web-astro/src/styles/` - Global styles
-- `apps/web-astro/src/components/` - Component styles
+
+The SonicJS app uses modern CSS with CSS custom properties. Customize in:
+
+- `app/src/styles/` - Global styles
+- `app/src/components/` - Component styles
 
 ### Domain Configuration
+
 Change domains anytime with:
 
 ```bash
@@ -185,25 +183,28 @@ node scripts/substitute-templates.js
 ## 🚀 Deployment
 
 ### Manual Deployment
+
 ```bash
 # Deploy infrastructure
 cd infra && terraform apply
 
-# Deploy applications
-cd apps/admin-sonicjs && npm run deploy
-cd apps/web-astro && npm run deploy
+# Deploy application
+cd app && npm run deploy
 ```
 
 ### Automated CI/CD
+
 Push to `main` branch triggers:
+
 1. Terraform infrastructure updates
-2. Application deployments
+2. Application deployment
 3. Database migrations
 4. Cache invalidation
 
 Required GitHub secrets:
+
 - `CLOUDFLARE_API_TOKEN`
-- `CF_ACCOUNT_ID` 
+- `CF_ACCOUNT_ID`
 - `CF_ZONE_ID`
 
 ## 💰 Cost Optimization
@@ -227,6 +228,7 @@ We welcome contributions! Please see:
 - [Development Guide](docs/development.md)
 
 ### Development Setup
+
 ```bash
 git clone your-fork
 cd sonicjs_project_template
