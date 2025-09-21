@@ -194,8 +194,8 @@ _sub/
 *.sub.toml
 
 # Local development overrides
-apps/*/.env.local
-apps/*/local.config.*
+app/.env.local
+app/local.config.*
 
 # ADR working drafts (commit when ready)
 docs/adr/draft-*

@@ -20,6 +20,17 @@ This is a **SonicJS Community Website Template** that provides automated infrast
 
 ## Setup Commands
 
+### Project Validation
+
+```bash
+# Comprehensive project validation
+npm run validate
+# or directly: node scripts/validate.js
+
+# PowerShell version (Windows)
+.\scripts\validate.ps1
+```
+
 ### Initial Project Setup
 
 ```bash
@@ -255,9 +266,47 @@ wrangler d1 info popfizz_db
 npm run db:migrate:local
 ```
 
+## Troubleshooting
+
+### Automated Validation
+
+```bash
+# Run comprehensive validation
+npm run validate
+
+# Get detailed output
+node scripts/validate.js --verbose
+
+# PowerShell version
+.\scripts\validate.ps1 -Verbose
+```
+
+### Common Issues
+
+```bash
+# Project configuration issues
+node scripts/setup.js yourdomain.com "Description"  # Regenerate config
+
+# Infrastructure validation
+cd infra && terraform validate
+
+# Application structure validation
+npm run validate  # Identifies specific issues with fixes
+```
+
+### Quick Fixes
+
+```bash
+# Reset to clean state
+node scripts/setup.js yourdomain.com "Your Description"
+npm run validate
+```
+
 ### Documentation Policy
 
 - **Read first** - Check `docs/README.md` for current architecture
+- **Validate often** - Run `npm run validate` before major changes  
+- **Troubleshooting guide** - See `docs/TROUBLESHOOTING.md` for detailed solutions
 - **ADR workflow** - Document decisions before implementation
 - **Development journal** - Record learning and evolution in `docs/DEVELOPMENT-JOURNAL.md`
 - **Living documentation** - Keep docs synchronized with code changes

@@ -27,6 +27,7 @@ jobs:
         with:
           node-version: 20
           cache: npm
+          cache-dependency-path: app/package-lock.json
 
       - name: Install Wrangler
         run: npm install -g wrangler@3
@@ -42,58 +43,48 @@ jobs:
       - name: Guard - Ensure placeholders still in repo version
         run: |
           set -e
-          grep -R "{{D1_DATABASE_ID}}" apps/admin-sonicjs/wrangler.toml > /dev/null || (echo "Missing placeholder D1 in admin wrangler.toml" && exit 1)
-          grep -R "{{KV_NAMESPACE_ID}}" apps/admin-sonicjs/wrangler.toml > /dev/null || (echo "Missing placeholder KV in admin wrangler.toml" && exit 1)
-          grep -R "{{D1_DATABASE_ID}}" apps/web-astro/wrangler.toml > /dev/null || (echo "Missing placeholder D1 in web wrangler.toml" && exit 1)
-          grep -R "{{KV_NAMESPACE_ID}}" apps/web-astro/wrangler.toml > /dev/null || (echo "Missing placeholder KV in web wrangler.toml" && exit 1)
+          grep -R "{{D1_DATABASE_ID}}" app/wrangler.toml > /dev/null || (echo "Missing placeholder D1 in wrangler.toml" && exit 1)
+          grep -R "{{KV_NAMESPACE_ID}}" app/wrangler.toml > /dev/null || (echo "Missing placeholder KV in wrangler.toml" && exit 1)
 
-      - name: Prepare substituted copies
+      - name: Prepare substituted copy
         run: |
           set -e
           mkdir -p _sub
-          cp apps/admin-sonicjs/wrangler.toml _sub/wrangler.admin.toml
-          cp apps/web-astro/wrangler.toml _sub/wrangler.web.toml
-          sed -i "s/{{D1_DATABASE_ID}}/$D1_DATABASE_ID/g" _sub/wrangler.admin.toml
-          sed -i "s/{{KV_NAMESPACE_ID}}/$KV_NAMESPACE_ID/g" _sub/wrangler.admin.toml
-          sed -i "s/{{D1_DATABASE_ID}}/$D1_DATABASE_ID/g" _sub/wrangler.web.toml
-          sed -i "s/{{KV_NAMESPACE_ID}}/$KV_NAMESPACE_ID/g" _sub/wrangler.web.toml
+          cp app/wrangler.toml _sub/wrangler.sub.toml
+          sed -i "s/{{D1_DATABASE_ID}}/$D1_DATABASE_ID/g" _sub/wrangler.sub.toml
+          sed -i "s/{{KV_NAMESPACE_ID}}/$KV_NAMESPACE_ID/g" _sub/wrangler.sub.toml
           # R2 Bucket handled by name not ID; ensure present
-          grep "$R2_BUCKET" _sub/wrangler.admin.toml || echo "Note: R2 bucket name not referenced explicitly in admin" 
-          grep "$R2_BUCKET" _sub/wrangler.web.toml || echo "Note: R2 bucket name not referenced explicitly in web" 
+          grep "$R2_BUCKET" _sub/wrangler.sub.toml || echo "Note: R2 bucket name not referenced explicitly" 
 
-      - name: Guard - Ensure no placeholders remain in substituted copies
+      - name: Guard - Ensure no placeholders remain in substituted copy
         run: |
           set -e
-          ! grep -R "{{D1_DATABASE_ID}}" _sub/wrangler.admin.toml || (echo "Substitution failed for admin D1" && exit 1)
-          ! grep -R "{{KV_NAMESPACE_ID}}" _sub/wrangler.admin.toml || (echo "Substitution failed for admin KV" && exit 1)
-          ! grep -R "{{D1_DATABASE_ID}}" _sub/wrangler.web.toml || (echo "Substitution failed for web D1" && exit 1)
-          ! grep -R "{{KV_NAMESPACE_ID}}" _sub/wrangler.web.toml || (echo "Substitution failed for web KV" && exit 1)
+          ! grep -R "{{D1_DATABASE_ID}}" _sub/wrangler.sub.toml || (echo "Substitution failed for D1" && exit 1)
+          ! grep -R "{{KV_NAMESPACE_ID}}" _sub/wrangler.sub.toml || (echo "Substitution failed for KV" && exit 1)
 
-      - name: Install CMS dependencies
-        working-directory: apps/admin-sonicjs
+      - name: Install SonicJS dependencies
+        working-directory: app
         run: npm ci || npm install
 
-      - name: Deploy CMS
-        working-directory: apps/admin-sonicjs
+      - name: Run database migrations
+        working-directory: app
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         run: |
-          cp ../../_sub/wrangler.admin.toml wrangler.sub.toml
-          wrangler deploy --config wrangler.sub.toml
+          cp ../_sub/wrangler.sub.toml wrangler.sub.toml
+          wrangler d1 migrations apply popfizz_db --config wrangler.sub.toml
 
-      - name: Build Web Frontend
-        working-directory: apps/web-astro
-        run: |
-          npm ci || npm install
-          npm run build
+      - name: Build SonicJS application
+        working-directory: app
+        run: npm run build
 
-      - name: Deploy Web Frontend
-        working-directory: apps/web-astro
+      - name: Deploy SonicJS application
+        working-directory: app
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         run: |
-          cp ../../_sub/wrangler.web.toml wrangler.sub.toml
+          cp ../_sub/wrangler.sub.toml wrangler.sub.toml
           wrangler deploy --config wrangler.sub.toml
 
       - name: Summary
-        run: echo "Deployment complete. Frontend + CMS deployed with substituted bindings."
+        run: echo "Deployment complete. Single SonicJS worker deployed with integrated admin and frontend."

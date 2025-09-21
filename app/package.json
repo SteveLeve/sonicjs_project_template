@@ -1,0 +1,31 @@
+{
+  "name": "popfizz-sonicjs",
+  "version": "1.0.0",
+  "description": "Popfizz Community Site - SonicJS Application",
+  "main": "src/index.js",
+  "scripts": {
+    "dev": "wrangler dev",
+    "build": "astro build",
+    "deploy": "wrangler deploy",
+    "db:migrate": "wrangler d1 migrations apply popfizz_db",
+    "db:migrate:local": "wrangler d1 migrations apply popfizz_db --local"
+  },
+  "dependencies": {
+    "@astrojs/cloudflare": "^10.0.0",
+    "@astrojs/react": "^3.0.0",
+    "@astrojs/tailwind": "^5.0.0",
+    "astro": "^4.0.0",
+    "drizzle-orm": "^0.30.0",
+    "hono": "^4.0.0",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "sonicjs": "^2.0.0",
+    "tailwindcss": "^3.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.0.0",
+    "@types/react-dom": "^18.0.0",
+    "wrangler": "^3.0.0"
+  },
+  "type": "module"
+}

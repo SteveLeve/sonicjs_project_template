@@ -17,10 +17,10 @@ output "r2_bucket_name" {
 # Configuration summary
 output "project_info" {
   value = {
-    project_name   = var.project_name
-    root_hostname  = var.root_hostname
-    admin_hostname = var.admin_hostname
-    zone_name      = data.cloudflare_zone.main.name
+    project_name = var.project_name
+    hostname     = var.hostname
+    admin_url    = "https://${var.hostname}/admin"
+    zone_name    = data.cloudflare_zone.main.name
   }
   description = "Project configuration summary"
 }

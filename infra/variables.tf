@@ -42,7 +42,7 @@ variable "r2_bucket_name" {
 }
 
 # Hostnames
-variable "root_hostname" {
+variable "hostname" {
   type        = string
   default     = "example.com"
   description = "Domain hostname (admin at /admin route)"

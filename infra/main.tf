@@ -24,14 +24,12 @@ resource "cloudflare_r2_bucket" "media" {
 }
 
 # --- DNS Records ---
-# DEFERRED: Will be implemented in future ADR addressing domain cutover strategy
-#
-# resource "cloudflare_dns_record" "root" {
-#   zone_id = var.zone_id
-#   name    = "@"
-#   type    = "A"
-#   content = "192.0.2.1"     # placeholder IP; proxied so origin is hidden
-#   ttl     = 1               # auto for proxied records
-#   proxied = true
-#   comment = "Root domain for ${var.project_name} frontend"
-# }
+resource "cloudflare_dns_record" "root" {
+  zone_id = var.zone_id
+  name    = "@"
+  type    = "A"
+  content = "192.0.2.1"     # placeholder IP; proxied so origin is hidden
+  ttl     = 1               # automatic when proxied
+  proxied = true
+  comment = "Root domain for ${var.project_name} SonicJS application"
+}
